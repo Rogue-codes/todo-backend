@@ -1,3 +1,4 @@
+// const { date } = require('joi');
 const mongoose = require('mongoose');
 
 const todoSchema = new mongoose.Schema({
@@ -6,8 +7,8 @@ const todoSchema = new mongoose.Schema({
     priority: String,
     uid: String,
     isComplete: Boolean,
-    "date": {type: Date, default:new Date()},
-    "dateDue" : {type: Date, required:true}
+    "date": {type: String, default:new Date().toLocaleString().split(',')[0]},
+    dateDue : String,
 })
 
 const Todo = mongoose.model('Todo',todoSchema)

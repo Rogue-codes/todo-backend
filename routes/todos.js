@@ -1,5 +1,5 @@
 const Todo = require('../model/todo')
-// const auth = require('../middleware/auth')
+const auth = require('../middleware/auth')
 const express = require('express')
 const joi = require('joi')
 
@@ -7,7 +7,7 @@ const joi = require('joi')
 const router = express.Router()
 
 // handling a get request
-router.get('/', async (req, res) => {
+router.get('/',  async (req, res) => {
     try{
         const todos = await Todo.find().sort({date: -1})
         res.send(todos)
@@ -22,12 +22,12 @@ router.get('/', async (req, res) => {
 router.post('/', async (req,res) => {
     const Schema = joi.object({
         name: joi.string().min(3).max(200).required(),
-        author: joi.string().min(3).max(30).required(),
+        author: joi.string().min(3).max(200),
         priority: joi.string(),
         uid: joi.string(),
         isComplete: joi.boolean(),
-        date: joi.date(),
-        dateDue: joi.date().required().raw()
+        date: joi.string(),
+        dateDue: joi.string()
     })
 
     const {error} = Schema.validate(req.body)
@@ -69,8 +69,10 @@ router.put('/:id', async (req, res) => {
         date: joi.date(),
     })
 
+    // using joi to validate our request body before sending to the client side
     const {error} = Schema.validate(req.body)
 
+    // if there's an error in the joi schema, return the error from joi to the client
     if(error) return res.status(400).send(error.details[0].message)
 
     try{    
@@ -105,7 +107,7 @@ router.patch('/:id', async(req, res) => {
 
         const updatedTodo = await Todo.findByIdAndUpdate(req.params.id,{
             isComplete : !todo.isComplete
-        })
+        },{new:true})
 
         res.send(updatedTodo)
     }catch(err){
