@@ -1,5 +1,5 @@
 const Todo = require('../model/todo')
-const auth = require('../middleware/auth')
+// const auth = require('../middleware/auth')
 const express = require('express')
 const joi = require('joi')
 
@@ -19,10 +19,10 @@ router.get('/',  async (req, res) => {
 
 })
 // send a post request to the DB.
-router.post('/', async (req,res) => {
+router.post('/',  async (req,res) => {
     const Schema = joi.object({
         name: joi.string().min(3).max(200).required(),
-        author: joi.string().min(3).max(200),
+        author: joi.string().min(3).max(500),
         priority: joi.string(),
         uid: joi.string(),
         isComplete: joi.boolean(),
@@ -62,7 +62,7 @@ router.put('/:id', async (req, res) => {
     // using joi to validate our new entry
     const Schema = joi.object({
         name: joi.string().min(3).max(200).required(),
-        author: joi.string().min(3).max(30).required(),
+        author: joi.string().min(3).max(500).required(),
         priority: joi.string(),
         uid: joi.string(),
         isComplete: joi.boolean(),
@@ -70,9 +70,9 @@ router.put('/:id', async (req, res) => {
     })
 
     // using joi to validate our request body before sending to the client side
+    
     const {error} = Schema.validate(req.body)
 
-    // if there's an error in the joi schema, return the error from joi to the client
     if(error) return res.status(400).send(error.details[0].message)
 
     try{    
